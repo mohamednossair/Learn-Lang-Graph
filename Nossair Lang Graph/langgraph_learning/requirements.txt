@@ -1,0 +1,70 @@
+langgraph>=0.2.0
+langchain>=0.2.0
+langchain-ollama>=0.1.0
+langchain-core>=0.2.0
+langgraph-checkpoint-sqlite
+pydantic>=2.0.0
+# Lesson 12 & 13 — RAG + vector memory
+langchain-community>=0.2.0
+langchain-text-splitters>=0.2.0
+chromadb>=0.5.0
+# Lesson 14 — Testing
+pytest>=7.0.0
+# Lesson 15 — Deployment
+fastapi>=0.110.0
+uvicorn>=0.29.0
+python-dotenv>=1.0.0
+# Notebooks
+jupyter
+ipykernel
+
+# Lesson 16 — Oracle 19c persistence + async (PRIMARY)
+oracledb>=2.0.0
+
+# Lesson 16 — PostgreSQL persistence (REFERENCE only — kept for comparison)
+# psycopg2-binary>=2.9.0
+# asyncpg>=0.29.0
+# psycopg-pool>=3.2.0
+# langgraph-checkpoint-postgres>=0.0.1
+
+# Lesson 17 — Auth & RBAC
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# Lesson 18 — Observability
+prometheus-client>=0.20.0
+opentelemetry-sdk>=1.24.0
+opentelemetry-exporter-otlp>=1.24.0
+
+# Lesson 19 — Event-driven agents
+celery>=5.3.0
+redis>=5.0.0
+
+# Lesson 20 — Cost control (no extra deps beyond above)
+
+# Lesson 21 — AWS Bedrock (replaces/extends Ollama with managed LLMs)
+boto3>=1.34.0
+langchain-aws>=0.1.0
+
+# Lesson 22 — AWS S3 storage (conversation snapshots, document storage, presigned URLs)
+# boto3 already included above
+
+# Lesson 23 — Conversation Management API (P5 Chatbot API layer)
+# fastapi, uvicorn, python-jose already included above
+# python-multipart required for file upload endpoint
+python-multipart>=0.0.9
+
+# Lesson 24 — EC2 Production Deployment
+# watchtower: CloudWatch log handler (boto3 already included above)
+watchtower>=3.0.0
+
+# Lesson 25 — Long-Term Memory with Mem0
+# mem0ai: automatic memory extraction, deduplication, contradiction resolution
+# qdrant-client: local vector store backend for self-hosted Mem0
+mem0ai>=0.1.0
+qdrant-client>=1.9.0
+
+# Lesson 26 — RAG with Apache Solr
+# pysolr: Python Solr client (BM25 keyword + kNN vector search)
+# langchain-community already included above (SolrVectorStore)
+pysolr>=3.9.0
