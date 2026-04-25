@@ -47,7 +47,7 @@ class RetryState(TypedDict):
 
 # ── STEP 3: LLM + Agent Node ──────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 llm_with_tools = llm.bind_tools(tools)
 
 SYSTEM = SystemMessage(content=(

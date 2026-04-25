@@ -90,10 +90,10 @@ class MultiAgentState(TypedDict):
 # STEP 3 — LLMs
 # -------------------------------------------------------------
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 
 # Supervisor LLM — makes routing decisions
-supervisor_llm = ChatOllama(model="llama3", temperature=0)
+supervisor_llm = ChatOllama(model="llama3.2", temperature=0)
 
 # Specialist LLMs with their tools bound
 math_llm = llm.bind_tools([calculate])

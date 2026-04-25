@@ -108,7 +108,7 @@ class AgentState(TypedDict):
 # to use a tool.
 # -------------------------------------------------------------
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 llm_with_tools = llm.bind_tools(tools)
 
 

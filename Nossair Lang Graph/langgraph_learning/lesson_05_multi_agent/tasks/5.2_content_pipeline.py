@@ -32,7 +32,7 @@ class ContentState(TypedDict):
 
 # ── STEP 2: LLM ───────────────────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0.5)
+llm = ChatOllama(model="llama3.2", temperature=0.5)
 
 
 # ── STEP 3: Supervisor Node ───────────────────────────────────

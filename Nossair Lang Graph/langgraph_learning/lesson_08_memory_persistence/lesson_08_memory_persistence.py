@@ -36,7 +36,7 @@ class ChatState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-llm = ChatOllama(model="llama3", temperature=0.7)
+llm = ChatOllama(model="llama3.2", temperature=0.7)
 
 
 def chatbot_node(state: ChatState) -> dict:

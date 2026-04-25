@@ -25,7 +25,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "capstone.db")
 REPORTS_DIR = os.path.join(os.path.dirname(__file__), "reports")
-llm = ChatOllama(model="llama3", temperature=0.2)
+llm = ChatOllama(model="llama3.2", temperature=0.2)
 
 
 class ReportState(TypedDict):

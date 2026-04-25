@@ -37,7 +37,7 @@ class AnalysisState(TypedDict):
 
 # ── STEP 2: LLM ───────────────────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0.3)
+llm = ChatOllama(model="llama3.2", temperature=0.3)
 
 
 # ── STEP 3: Supervisor Node ───────────────────────────────────

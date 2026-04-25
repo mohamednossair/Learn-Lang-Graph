@@ -41,10 +41,10 @@ class ChatState(TypedDict):
 # STEP 2 — Set up Ollama LLM
 #
 # ChatOllama connects to your local Ollama instance.
-# Change model="llama3" to any model you have pulled.
+# Change model="llama3.2" to any model you have pulled.
 # -------------------------------------------------------------
 
-llm = ChatOllama(model="llama3", temperature=0.7)
+llm = ChatOllama(model="llama3.2", temperature=0.7)
 
 
 # -------------------------------------------------------------

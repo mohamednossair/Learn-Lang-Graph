@@ -81,7 +81,7 @@ logger = logging.getLogger("lesson_21")
 #
 # MIGRATION FROM OLLAMA:
 #   ChatOllama(model="llama3.2") → ChatBedrockConverse(model_id="meta.llama3-8b-instruct-v1:0")
-#   ChatOllama(model="llama3")   → ChatBedrockConverse(model_id="anthropic.claude-3-haiku-20240307-v1:0")
+#   ChatOllama(model="llama3.2")   → ChatBedrockConverse(model_id="anthropic.claude-3-haiku-20240307-v1:0")
 #
 # ===========================================================================
 

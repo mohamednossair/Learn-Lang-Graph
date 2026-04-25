@@ -19,6 +19,11 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 
 
+# ── LLM Instance ───────────────────────────────────────────────
+
+llm = ChatOllama(model="llama3.2")
+
+
 # ── STEP 1: State ─────────────────────────────────────────────
 
 class PersonaState(TypedDict):
@@ -46,7 +51,15 @@ PERSONA_PROMPTS = {
 #   otherwise    → return current persona unchanged
 
 def detect_persona_switch(message: str, current_persona: str) -> str:
-    pass
+    message_lower = message.lower()
+    if "be pirate" in message_lower:
+        return "pirate"
+    elif "be formal" in message_lower:
+        return "formal"
+    elif "be casual" in message_lower:
+        return "casual"
+    else:
+        return current_persona
 
 
 # ── STEP 4: Chatbot Node ──────────────────────────────────────
@@ -57,14 +70,31 @@ def detect_persona_switch(message: str, current_persona: str) -> str:
 #   4. Call LLM, return {"messages": [response], "persona": persona}
 
 def persona_node(state: PersonaState) -> dict:
-    pass
+    # 1. Get latest human message
+    latest_message = state["messages"][-1]
+    message_content = latest_message.content
+    
+    # 2. Check for persona switch → update state["persona"] if changed
+    new_persona = detect_persona_switch(message_content, state["persona"])
+    
+    # 3. Build messages with SystemMessage(PERSONA_PROMPTS[persona]) prepended
+    system_msg = SystemMessage(content=PERSONA_PROMPTS[new_persona])
+    messages = [system_msg] + state["messages"]
+    
+    # 4. Call LLM, return {"messages": [response], "persona": persona}
+    response = llm.invoke(messages)
+    
+    return {"messages": [response], "persona": new_persona}
 
 
 # ── STEP 5: Build Graph ───────────────────────────────────────
 
 graph_builder = StateGraph(PersonaState)
 
-# TODO: add node, edges, compile
+# Add node, edges, compile
+graph_builder.add_node("persona_node", persona_node)
+graph_builder.add_edge(START, "persona_node")
+graph_builder.add_edge("persona_node", END)
 
 graph = graph_builder.compile()
 

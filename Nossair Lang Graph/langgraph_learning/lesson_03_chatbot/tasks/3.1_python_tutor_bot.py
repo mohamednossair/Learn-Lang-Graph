@@ -26,7 +26,7 @@ class TutorState(TypedDict):
 
 # ── STEP 2: LLM Setup ─────────────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0.5)
+llm = ChatOllama(model="llama3.2", temperature=0.5)
 
 SYSTEM_PROMPT = (
     "You are a senior Python tutor with 10 years of experience. "
@@ -38,21 +38,22 @@ SYSTEM_PROMPT = (
 
 
 # ── STEP 3: Tutor Node ────────────────────────────────────────
-# TODO:
-#   - Prepend a SystemMessage with SYSTEM_PROMPT to the messages
-#   - Call the LLM with the full message list
-#   - Return {"messages": [response]}
 
 def tutor_node(state: TutorState) -> dict:
-    pass
+    system_message = SystemMessage(content=SYSTEM_PROMPT)
+    messages = [system_message] + state["messages"]
+    response = llm.invoke(messages)
+    return {"messages": [response]}
 
 
 # ── STEP 4: Build Graph ───────────────────────────────────────
 
 graph_builder = StateGraph(TutorState)
 
-# TODO: add node, edges, compile
+graph_builder.add_node("tutor", tutor_node)
 
+graph_builder.add_edge(START, "tutor")
+graph_builder.add_edge("tutor", END)
 graph = graph_builder.compile()
 
 

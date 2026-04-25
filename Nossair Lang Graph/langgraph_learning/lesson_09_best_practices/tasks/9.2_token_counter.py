@@ -80,7 +80,7 @@ def token_counter_node(state: TokenState) -> dict:
 
 # ── STEP 4: LLM Node ──────────────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0.5)
+llm = ChatOllama(model="llama3.2", temperature=0.5)
 
 
 def llm_node(state: TokenState) -> dict:

@@ -29,29 +29,59 @@ class TrackerState(TypedDict):
 
 # ── STEP 2: LLM ───────────────────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0.5)
+llm = ChatOllama(model="llama3.2", temperature=0.5)
+
+SYSTEM_PROMPT = (
+    "You are a senior Python tutor with 10 years of experience. "
+    "Rules: (1) Always provide a working code example for every answer. "
+    "(2) At the start of every response, rate the user's question "
+    "on specificity from 1 (very vague) to 5 (very specific). "
+    "Format: [Specificity: X/5]. (3) Keep answers concise and practical."
+)
 
 
 # ── STEP 3: Context Node ──────────────────────────────────────
-# TODO:
-#   1. Increment turn_count by 1
-#   2. Detect topic from the latest HumanMessage
-#      (simple: take first 5 words, or keyword match)
-#   3. If turn_count == 5, append a SystemMessage:
-#      "We are at turn 5. Please briefly summarize what we've
-#       discussed so far before answering the next question."
-#   4. Call LLM and return updated messages, topic, turn_count
 
 def context_node(state: TrackerState) -> dict:
-    pass
+    turn_count = state.get("turn_count", 0) + 1
+    
+    # Detect topic from latest HumanMessage
+    latest_human = None
+    for msg in reversed(state["messages"]):
+        if isinstance(msg, HumanMessage):
+            latest_human = msg
+            break
+    
+    if latest_human:
+        words = latest_human.content.split()[:5]
+        topic = " ".join(words)
+    else:
+        topic = state.get("topic", "")
+    
+    # Build messages list
+    system_message = SystemMessage(content=SYSTEM_PROMPT)
+    messages = [system_message] + state["messages"]
+    
+    # At turn 5, inject summary request
+    if turn_count == 5:
+        summary_message = SystemMessage(
+            content="We are at turn 5. Please briefly summarize what we've discussed so far before answering the next question."
+        )
+        messages.append(summary_message)
+    
+    response = llm.invoke(messages)
+    return {"messages": [response], "topic": topic, "turn_count": turn_count}
 
 
 # ── STEP 4: Build Graph ───────────────────────────────────────
 
 graph_builder = StateGraph(TrackerState)
 
-# TODO: add node, edges, compile
 
+graph_builder.add_node("context", context_node)
+
+graph_builder.add_edge(START, "context")
+graph_builder.add_edge("context", END)
 graph = graph_builder.compile()
 
 
@@ -91,4 +121,4 @@ if __name__ == "__main__":
         print(f"\n[Turn {turn_count + 1}] You: {q}")
         reply, history, topic, turn_count = chat(q, history, topic, turn_count)
         print(f"Topic: {topic} | Turns: {turn_count}")
-        print(f"Bot: {reply[:300]}")
+        print(f"Bot: {reply}")

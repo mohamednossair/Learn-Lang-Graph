@@ -26,12 +26,12 @@ from langgraph.graph.message import add_messages
 
 class TrimmerState(TypedDict):
     messages: Annotated[list, add_messages]
-    summary_count: int   # how many times we have summarized
+    summary_count: int  # how many times we have summarized
 
 
 # ── STEP 2: LLM ───────────────────────────────────────────────
 
-llm = ChatOllama(model="llama3", temperature=0.3)
+llm = ChatOllama(model="llama3.2", temperature=0.3)
 
 
 # ── STEP 3: Trim Helper ───────────────────────────────────────
@@ -43,7 +43,11 @@ llm = ChatOllama(model="llama3", temperature=0.3)
 #             + messages[-2:]
 
 def summarize_and_trim(messages: list) -> list:
-    pass
+    text = ""
+    for message in messages[:8]:
+        text = text + message.content
+    summary = llm.invoke([SystemMessage(content=f"Summarize this conversation in 2-3 sentences: {text}")])
+    return [SystemMessage(content=f"[Summary of earlier conversation]: {summary.content}")] + messages[-2:]
 
 
 # ── STEP 4: Chatbot Node ──────────────────────────────────────
@@ -69,14 +73,16 @@ def summarize_and_trim(messages: list) -> list:
 # trim there before invoking the graph.
 
 def chatbot_node(state: TrimmerState) -> dict:
-    pass
+    response = llm.invoke(state["messages"])
+    return {"messages": [response]}
 
 
 # ── STEP 5: Build Graph ───────────────────────────────────────
 
 graph_builder = StateGraph(TrimmerState)
-
-# TODO: add node, edges, compile
+graph_builder.add_node("chatbot", chatbot_node)
+graph_builder.add_edge(START, "chatbot")
+graph_builder.add_edge("chatbot", END)
 
 graph = graph_builder.compile()
 
@@ -87,7 +93,9 @@ graph = graph_builder.compile()
 def chat(user_input: str, history: list, summary_count: int):
     history.append(HumanMessage(content=user_input))
 
-    # TODO: if len(history) > 10 → call summarize_and_trim and replace history
+    if len(history) > 10:
+        history = summarize_and_trim(history)
+        summary_count += 1
 
     result = graph.invoke({"messages": history, "summary_count": summary_count})
     new_msg = result["messages"][-1]
@@ -116,7 +124,7 @@ if __name__ == "__main__":
         "What is a lambda function?",
         "What is a generator?",
         "What is a decorator?",
-        "What is the GIL?",   # turn 11 — should trigger trim
+        "What is the GIL?",  # turn 11 — should trigger trim
         "What is asyncio?",
     ]
 

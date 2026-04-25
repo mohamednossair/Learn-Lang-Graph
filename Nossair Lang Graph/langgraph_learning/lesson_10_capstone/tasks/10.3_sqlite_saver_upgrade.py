@@ -30,7 +30,7 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "capstone.db")
 CHECKPOINT_DB = os.path.join(os.path.dirname(__file__), "capstone_checkpoints.db")
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 
 
 # ── STEP 1: State ─────────────────────────────────────────────

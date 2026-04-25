@@ -62,7 +62,7 @@ tools = [add, multiply]
 #   4. Count tool_calls in response
 #   5. Return updated metrics
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 llm_with_tools = llm.bind_tools(tools)
 
 

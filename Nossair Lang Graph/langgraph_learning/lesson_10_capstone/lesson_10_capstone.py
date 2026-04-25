@@ -205,7 +205,7 @@ class CapstoneState(TypedDict):
 # LLMs
 # =============================================================
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 db_llm = llm.bind_tools(all_tools)
 
 

@@ -26,7 +26,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "capstone.db")
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 
 
 # ── STEP 1: Pydantic Validation Models ────────────────────────

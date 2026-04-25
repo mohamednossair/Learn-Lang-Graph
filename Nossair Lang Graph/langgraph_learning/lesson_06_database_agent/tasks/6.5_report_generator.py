@@ -95,7 +95,7 @@ class AgentState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-llm = ChatOllama(model="llama3", temperature=0.2)
+llm = ChatOllama(model="llama3.2", temperature=0.2)
 llm_with_tools = llm.bind_tools(tools)
 
 SYSTEM = SystemMessage(content=(

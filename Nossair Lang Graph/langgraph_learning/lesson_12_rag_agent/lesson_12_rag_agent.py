@@ -104,7 +104,7 @@ def build_vector_store():
             for i, text in enumerate(KNOWLEDGE_BASE)]
     chunks = splitter.split_documents(docs)
 
-    embeddings = OllamaEmbeddings(model="llama3")
+    embeddings = OllamaEmbeddings(model="llama3.2")
     db_path = os.path.join(os.path.dirname(__file__), "rag_chroma_db")
     vectorstore = Chroma.from_documents(
         documents=chunks,
@@ -180,7 +180,7 @@ class RAGState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 rag_tools = [retrieve_documents]
 rag_llm = llm.bind_tools(rag_tools)
 

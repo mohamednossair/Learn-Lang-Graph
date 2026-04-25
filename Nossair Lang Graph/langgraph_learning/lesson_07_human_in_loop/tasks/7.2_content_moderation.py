@@ -41,7 +41,7 @@ FORBIDDEN = ["hate", "violent", "illegal", "spam", "scam", "fake"]
 # TODO: Use ChatOllama to write a short 2-sentence social media post about state["topic"]
 # Return {"draft": "..."}
 
-llm = ChatOllama(model="llama3", temperature=0.7)
+llm = ChatOllama(model="llama3.2", temperature=0.7)
 
 
 def generator_node(state: ModerationState) -> dict:
