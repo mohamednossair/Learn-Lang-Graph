@@ -69,7 +69,7 @@ logger = logging.getLogger("lesson_25")
 MEM0_API_KEY = os.getenv("MEM0_API_KEY")          # Option A: Mem0 Cloud
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2")
 
 # ---------------------------------------------------------------------------
 # Try to import Mem0. Fall back to simulation if not installed.

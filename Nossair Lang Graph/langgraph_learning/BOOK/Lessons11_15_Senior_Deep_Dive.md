@@ -285,7 +285,7 @@ chunks = splitter.split_documents(docs)
 
 # 3. Embed each chunk (convert text → vector of numbers)
 from langchain_ollama import OllamaEmbeddings
-embeddings = OllamaEmbeddings(model="llama3")
+embeddings = OllamaEmbeddings(model="llama3.2")
 
 # 4. Store in vector database
 from langchain_community.vectorstores import Chroma

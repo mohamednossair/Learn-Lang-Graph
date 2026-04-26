@@ -83,7 +83,7 @@ SOLR_COLLECTION = os.getenv("SOLR_COLLECTION", "langgraph_docs")
 SOLR_USERNAME = os.getenv("SOLR_USERNAME")
 SOLR_PASSWORD = os.getenv("SOLR_PASSWORD")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2")
 
 # ---------------------------------------------------------------------------
 # Try to import pysolr. Fall back to simulation if not installed.

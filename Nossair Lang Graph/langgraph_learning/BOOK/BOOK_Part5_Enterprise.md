@@ -1675,8 +1675,8 @@ m = MemoryClient(api_key=os.getenv("MEM0_API_KEY"))
 ### Option B — Self-hosted (Local Ollama + Qdrant)
 ```python
 config = {
-    "llm":          {"provider": "ollama", "config": {"model": "llama3", ...}},
-    "embedder":     {"provider": "ollama", "config": {"model": "llama3", ...}},
+    "llm":          {"provider": "ollama", "config": {"model": "llama3.2", ...}},
+    "embedder":     {"provider": "ollama", "config": {"model": "llama3.2", ...}},
     "vector_store": {"provider": "qdrant", "config": {"url": "http://localhost:6333", ...}},
     "version":      "v1.1",
 }

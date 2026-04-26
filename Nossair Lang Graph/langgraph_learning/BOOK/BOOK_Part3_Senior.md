@@ -67,7 +67,7 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.types import Send
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 
 # --- Shared state fields ---
 class ReviewState(TypedDict):
@@ -286,11 +286,11 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=30)
 docs = [Document(page_content=d) for d in DOCUMENTS]
 chunks = splitter.split_documents(docs)
 
-embeddings = OllamaEmbeddings(model="llama3")
+embeddings = OllamaEmbeddings(model="llama3.2")
 vectorstore = Chroma.from_documents(chunks, embeddings, persist_directory="./chroma_db")
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-llm = ChatOllama(model="llama3", temperature=0)
+llm = ChatOllama(model="llama3.2", temperature=0)
 
 # --- Tool: retrieval ---
 @tool
@@ -416,8 +416,8 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
 
-llm = ChatOllama(model="llama3", temperature=0)
-embeddings = OllamaEmbeddings(model="llama3")
+llm = ChatOllama(model="llama3.2", temperature=0)
+embeddings = OllamaEmbeddings(model="llama3.2")
 memory_store = Chroma(persist_directory="./memory_db", embedding_function=embeddings)
 
 class MemoryState(TypedDict):
