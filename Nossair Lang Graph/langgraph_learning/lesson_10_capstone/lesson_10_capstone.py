@@ -34,6 +34,11 @@
 #   ✅ Full logging
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import os
 import sqlite3
 import logging
@@ -205,7 +210,7 @@ class CapstoneState(TypedDict):
 # LLMs
 # =============================================================
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 db_llm = llm.bind_tools(all_tools)
 
 

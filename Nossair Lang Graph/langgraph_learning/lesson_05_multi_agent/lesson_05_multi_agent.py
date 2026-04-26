@@ -23,6 +23,11 @@
 # back to the supervisor, who then decides what to do next.
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 from typing import Annotated, Literal
 from typing_extensions import TypedDict
 from langchain_ollama import ChatOllama
@@ -90,10 +95,10 @@ class MultiAgentState(TypedDict):
 # STEP 3 — LLMs
 # -------------------------------------------------------------
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 # Supervisor LLM — makes routing decisions
-supervisor_llm = ChatOllama(model="llama3.2", temperature=0)
+supervisor_llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 # Specialist LLMs with their tools bound
 math_llm = llm.bind_tools([calculate])

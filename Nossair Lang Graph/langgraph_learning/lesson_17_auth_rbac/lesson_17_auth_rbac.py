@@ -11,6 +11,11 @@ Teaches:
 Prerequisites: pip install python-jose[cryptography] passlib[bcrypt]
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import hashlib
 import json
 import logging
@@ -267,7 +272,7 @@ class RBACState(TypedDict):
 # ---------------------------------------------------------------------------
 # LLM
 # ---------------------------------------------------------------------------
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # ---------------------------------------------------------------------------

@@ -12,6 +12,11 @@ Teaches:
 This capstone wires together: RBAC + observability + async + cost control.
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import asyncio
 import logging
 import os
@@ -51,7 +56,7 @@ class ModelConfig:
 MODEL_REGISTRY: dict[str, ModelConfig] = {
     "fast": ModelConfig(
         name="Fast (cheap)",
-        model_id="llama3.2",
+        model_id=get_ollama_model(),
         cost_per_1k_tokens=0.0002,
         max_tokens=2048,
         use_case="fast",
@@ -59,7 +64,7 @@ MODEL_REGISTRY: dict[str, ModelConfig] = {
     ),
     "balanced": ModelConfig(
         name="Balanced",
-        model_id="llama3.2",
+        model_id=get_ollama_model(),
         cost_per_1k_tokens=0.001,
         max_tokens=4096,
         use_case="balanced",
@@ -67,7 +72,7 @@ MODEL_REGISTRY: dict[str, ModelConfig] = {
     ),
     "powerful": ModelConfig(
         name="Powerful (expensive)",
-        model_id="llama3.2",     # same model for demo; prod: different endpoints
+        model_id=get_ollama_model(),     # same model for demo; prod: different endpoints
         cost_per_1k_tokens=0.015,
         max_tokens=8192,
         use_case="powerful",

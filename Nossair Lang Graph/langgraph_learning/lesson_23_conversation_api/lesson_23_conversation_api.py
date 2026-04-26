@@ -222,7 +222,7 @@ def get_llm():
         return ChatBedrockConverse(model_id=model_id, client=client)
     except Exception:
         from langchain_ollama import ChatOllama
-        return ChatOllama(model="llama3.2")
+        return ChatOllama(model=get_ollama_model())
 
 
 def route_to_agent(state: OrchestratorState) -> Literal["data_analysis_agent", "db_retrieval_agent", "general_agent"]:

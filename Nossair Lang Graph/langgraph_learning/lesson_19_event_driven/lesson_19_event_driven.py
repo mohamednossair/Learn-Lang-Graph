@@ -14,6 +14,11 @@ Prerequisites: pip install celery redis
 Without Redis: demo runs in fallback sync mode to show the patterns.
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import hashlib
 import hmac
 import json
@@ -298,7 +303,7 @@ class SlackMessageState(TypedDict):
 # ---------------------------------------------------------------------------
 # LLM
 # ---------------------------------------------------------------------------
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # ---------------------------------------------------------------------------

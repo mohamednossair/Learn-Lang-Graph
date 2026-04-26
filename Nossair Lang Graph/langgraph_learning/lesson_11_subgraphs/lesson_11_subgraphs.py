@@ -17,6 +17,11 @@
 #            (subgraph)  (subgraph)
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 from typing import Annotated
 from typing_extensions import TypedDict
 from langchain_ollama import ChatOllama
@@ -25,7 +30,7 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.types import Send
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # =============================================================

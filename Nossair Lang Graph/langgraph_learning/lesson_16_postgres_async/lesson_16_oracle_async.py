@@ -19,6 +19,11 @@ Note: lesson_16_postgres_async.py (PostgreSQL version) is kept as reference.
       This file is the ENTERPRISE PRIMARY for Oracle 19c environments.
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import asyncio
 import json
 import logging
@@ -264,7 +269,7 @@ class EnterpriseState(TypedDict):
 # ---------------------------------------------------------------------------
 # LLM
 # ---------------------------------------------------------------------------
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # ---------------------------------------------------------------------------

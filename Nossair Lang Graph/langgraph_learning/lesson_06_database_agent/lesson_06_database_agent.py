@@ -21,8 +21,12 @@
 #   Final answer to user
 # =============================================================
 
-import sqlite3
+import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
+import sqlite3
 from typing import Annotated
 from typing_extensions import TypedDict
 from langchain_ollama import ChatOllama
@@ -255,7 +259,7 @@ RULES:
 - Give clear, human-readable answers, not just raw data"""
 
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 llm_with_tools = llm.bind_tools(db_tools)
 
 

@@ -16,6 +16,11 @@
 #   thread_id              → separate "channels" (like separate users)
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import os
 import sqlite3
 from typing import Annotated
@@ -36,7 +41,7 @@ class ChatState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-llm = ChatOllama(model="llama3.2", temperature=0.7)
+llm = ChatOllama(model=get_ollama_model(), temperature=0.7)
 
 
 def chatbot_node(state: ChatState) -> dict:

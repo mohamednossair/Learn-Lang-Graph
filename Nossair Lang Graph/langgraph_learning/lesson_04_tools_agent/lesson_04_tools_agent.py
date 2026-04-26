@@ -22,6 +22,11 @@
 # and stops calling tools.
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 from typing import Annotated
 from typing_extensions import TypedDict
 from langchain_ollama import ChatOllama
@@ -108,7 +113,7 @@ class AgentState(TypedDict):
 # to use a tool.
 # -------------------------------------------------------------
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 llm_with_tools = llm.bind_tools(tools)
 
 

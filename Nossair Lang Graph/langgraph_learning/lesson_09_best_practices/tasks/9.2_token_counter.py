@@ -21,6 +21,10 @@ from langgraph.graph.message import add_messages
 
 try:
     import tiktoken
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import get_ollama_model
     TIKTOKEN_AVAILABLE = True
 except ImportError:
     TIKTOKEN_AVAILABLE = False
@@ -80,7 +84,7 @@ def token_counter_node(state: TokenState) -> dict:
 
 # ── STEP 4: LLM Node ──────────────────────────────────────────
 
-llm = ChatOllama(model="llama3.2", temperature=0.5)
+llm = ChatOllama(model=get_ollama_model(), temperature=0.5)
 
 
 def llm_node(state: TokenState) -> dict:

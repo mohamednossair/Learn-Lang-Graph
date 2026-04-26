@@ -16,6 +16,11 @@
 #   Lesson 9     = "it works in production"
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import logging
 import time
 import json
@@ -92,7 +97,7 @@ class SentimentResult(BaseModel):
 
 def analyze_with_structured_output(text: str) -> SentimentResult:
     """Use with_structured_output to guarantee valid JSON from the LLM."""
-    llm = ChatOllama(model="llama3.2", temperature=0)
+    llm = ChatOllama(model=get_ollama_model(), temperature=0)
     structured_llm = llm.with_structured_output(SentimentResult)
 
     system = SystemMessage(content="""Analyze the sentiment of the text.
@@ -117,7 +122,7 @@ class ResilientState(TypedDict):
     result:       str
 
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 def resilient_node(state: ResilientState) -> dict:

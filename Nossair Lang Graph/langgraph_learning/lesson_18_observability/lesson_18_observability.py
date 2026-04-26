@@ -12,6 +12,11 @@ Teaches:
 Prerequisites: pip install prometheus-client opentelemetry-sdk opentelemetry-exporter-otlp
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import json
 import logging
 import os
@@ -247,7 +252,7 @@ class ObservabilityState(TypedDict):
 # ---------------------------------------------------------------------------
 # LLM
 # ---------------------------------------------------------------------------
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # ---------------------------------------------------------------------------
@@ -277,7 +282,7 @@ def instrumented_chat_node(state: ObservabilityState) -> dict:
 
             # Estimate token usage (real: use response.usage_metadata)
             approx_tokens = len(str(response.content).split()) * 1.3
-            TOKEN_TOTAL.labels(tenant_id=tenant_id, model="llama3.2").inc(approx_tokens)
+            TOKEN_TOTAL.labels(tenant_id=tenant_id, model=get_ollama_model()).inc(approx_tokens)
 
             span.tag("response_tokens", int(approx_tokens))
             span.tag("user_id", state["user_id"])

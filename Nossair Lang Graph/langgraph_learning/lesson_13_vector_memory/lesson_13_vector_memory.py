@@ -20,6 +20,11 @@
 #   3. Save memories: extract new facts → embed → store
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import json
 import os
 from typing import Annotated, Optional
@@ -38,7 +43,7 @@ except ImportError:
     CHROMA_AVAILABLE = False
     print("⚠️  Run: pip install langchain-community chromadb")
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # =============================================================
@@ -48,7 +53,7 @@ llm = ChatOllama(model="llama3.2", temperature=0)
 def get_memory_store():
     if not CHROMA_AVAILABLE:
         return None
-    embeddings = OllamaEmbeddings(model="llama3.2")
+    embeddings = OllamaEmbeddings(model=get_ollama_model())
     db_path = os.path.join(os.path.dirname(__file__), "user_memory_db")
     return Chroma(persist_directory=db_path, embedding_function=embeddings)
 

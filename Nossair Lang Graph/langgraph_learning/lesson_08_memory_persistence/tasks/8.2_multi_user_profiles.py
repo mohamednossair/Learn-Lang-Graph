@@ -18,6 +18,10 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.sqlite import SqliteSaver
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import get_ollama_model
 
 
 # ── STEP 1: State ─────────────────────────────────────────────
@@ -36,7 +40,7 @@ class ProfileState(TypedDict):
 
 # ── STEP 2: LLM ───────────────────────────────────────────────
 
-llm = ChatOllama(model="llama3.2", temperature=0.3)
+llm = ChatOllama(model=get_ollama_model(), temperature=0.3)
 
 
 # ── STEP 3: Profile Extractor Node ───────────────────────────

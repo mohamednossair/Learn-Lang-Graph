@@ -17,6 +17,11 @@
 #           (LLM reads full message history, appends reply)
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, AIMessage
 from langgraph.graph import StateGraph, START, END
@@ -44,7 +49,7 @@ class ChatState(TypedDict):
 # Change model="llama3.2" to any model you have pulled.
 # -------------------------------------------------------------
 
-llm = ChatOllama(model="llama3.2", temperature=0.7)
+llm = ChatOllama(model=get_ollama_model(), temperature=0.7)
 
 
 # -------------------------------------------------------------

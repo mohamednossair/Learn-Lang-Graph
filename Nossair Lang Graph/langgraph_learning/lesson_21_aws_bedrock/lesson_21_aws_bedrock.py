@@ -224,7 +224,7 @@ def get_llm(
         logger.info("[LLM] Bedrock not available — falling back to ChatOllama")
         try:
             from langchain_ollama import ChatOllama
-            return ChatOllama(model="llama3.2", temperature=temperature)
+            return ChatOllama(model=get_ollama_model(), temperature=temperature)
         except ImportError:
             raise RuntimeError(
                 "Neither AWS credentials nor Ollama available. "

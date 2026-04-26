@@ -16,6 +16,10 @@ from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import get_ollama_model
 
 
 # ── STEP 1: State ─────────────────────────────────────────────
@@ -26,7 +30,7 @@ class TutorState(TypedDict):
 
 # ── STEP 2: LLM Setup ─────────────────────────────────────────
 
-llm = ChatOllama(model="llama3.2", temperature=0.5)
+llm = ChatOllama(model=get_ollama_model(), temperature=0.5)
 
 SYSTEM_PROMPT = (
     "You are a senior Python tutor with 10 years of experience. "

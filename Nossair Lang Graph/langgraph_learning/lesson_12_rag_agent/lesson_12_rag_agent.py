@@ -22,6 +22,11 @@
 #   [grounded answer based on real documents]
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import os
 from typing import Annotated
 from typing_extensions import TypedDict
@@ -104,7 +109,7 @@ def build_vector_store():
             for i, text in enumerate(KNOWLEDGE_BASE)]
     chunks = splitter.split_documents(docs)
 
-    embeddings = OllamaEmbeddings(model="llama3.2")
+    embeddings = OllamaEmbeddings(model=get_ollama_model())
     db_path = os.path.join(os.path.dirname(__file__), "rag_chroma_db")
     vectorstore = Chroma.from_documents(
         documents=chunks,
@@ -180,7 +185,7 @@ class RAGState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 rag_tools = [retrieve_documents]
 rag_llm = llm.bind_tools(rag_tools)
 

@@ -18,6 +18,11 @@
 #   or correct outputs — before they cause real-world effects.
 # =============================================================
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 from typing import Annotated
 from typing_extensions import TypedDict
 from langchain_ollama import ChatOllama
@@ -63,7 +68,7 @@ class ApprovalState(TypedDict):
     messages: Annotated[list, add_messages]
 
 
-llm_a = ChatOllama(model="llama3.2", temperature=0).bind_tools(sensitive_tools)
+llm_a = ChatOllama(model=get_ollama_model(), temperature=0).bind_tools(sensitive_tools)
 
 
 def agent_a(state: ApprovalState) -> dict:
@@ -183,7 +188,7 @@ class InfoState(TypedDict):
     user_info: dict    # filled by human during interrupt
 
 
-llm_b = ChatOllama(model="llama3.2", temperature=0)
+llm_b = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 def agent_b(state: InfoState) -> dict:
@@ -278,7 +283,7 @@ class ReviewState(TypedDict):
     revision_count: int
 
 
-llm_c = ChatOllama(model="llama3.2", temperature=0.5)
+llm_c = ChatOllama(model=get_ollama_model(), temperature=0.5)
 
 
 def write_draft(state: ReviewState) -> dict:

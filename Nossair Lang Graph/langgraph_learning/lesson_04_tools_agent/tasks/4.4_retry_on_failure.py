@@ -19,6 +19,10 @@ from langchain_core.tools import tool
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import get_ollama_model
 
 
 # ── STEP 1: Flaky Tool ────────────────────────────────────────
@@ -47,7 +51,7 @@ class RetryState(TypedDict):
 
 # ── STEP 3: LLM + Agent Node ──────────────────────────────────
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 llm_with_tools = llm.bind_tools(tools)
 
 SYSTEM = SystemMessage(content=(

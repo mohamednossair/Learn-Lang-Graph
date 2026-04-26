@@ -11,6 +11,11 @@ Teaches:
 Prerequisites: pip install psycopg2-binary asyncpg langgraph-checkpoint-postgres
 """
 
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import get_ollama_model
+
 import asyncio
 import logging
 import os
@@ -91,7 +96,7 @@ class EnterpriseState(TypedDict):
 # ---------------------------------------------------------------------------
 # LLM SETUP
 # ---------------------------------------------------------------------------
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 
 # ---------------------------------------------------------------------------

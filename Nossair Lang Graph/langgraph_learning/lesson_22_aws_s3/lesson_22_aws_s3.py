@@ -433,7 +433,7 @@ def get_llm():
     except Exception:
         logger.info("Bedrock not available — falling back to ChatOllama")
         from langchain_ollama import ChatOllama
-        return ChatOllama(model="llama3.2")
+        return ChatOllama(model=get_ollama_model())
 
 
 def document_upload_node(state: S3AgentState) -> dict:

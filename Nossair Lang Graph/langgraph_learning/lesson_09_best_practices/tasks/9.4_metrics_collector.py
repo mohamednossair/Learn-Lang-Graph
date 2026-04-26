@@ -21,6 +21,10 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 from langgraph.checkpoint.memory import MemorySaver
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import get_ollama_model
 
 
 logging.basicConfig(level=logging.WARNING)
@@ -62,7 +66,7 @@ tools = [add, multiply]
 #   4. Count tool_calls in response
 #   5. Return updated metrics
 
-llm = ChatOllama(model="llama3.2", temperature=0)
+llm = ChatOllama(model=get_ollama_model(), temperature=0)
 llm_with_tools = llm.bind_tools(tools)
 
 
