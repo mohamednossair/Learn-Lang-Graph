@@ -21,6 +21,7 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from config import get_ollama_model
 
@@ -54,20 +55,23 @@ def divide(a: float, b: float) -> str:
 
 
 # TODO: implement power tool
-# @tool
-# def power(base: float, exponent: float) -> float:
-#     """Raise base to the power of exponent."""
-#     pass
+@tool
+def power(base: float, exponent: float) -> float:
+    """Raise base to the power of exponent."""
+    return math.pow(base, exponent)
+
 
 # TODO: implement square_root tool
-# @tool
-# def square_root(n: float) -> str:
-#     """Compute square root of n. Returns error string if n < 0."""
-#     pass
+@tool
+def square_root(n: float) -> str:
+    """Compute square root of n. Returns error string if n < 0."""
+    if n < 0:
+        return "ERROR: Cannot compute square root of negative number"
+    return str(math.sqrt(n))
 
 
 # TODO: add all 6 tools to this list
-tools = [add, subtract, multiply, divide]
+tools = [add, subtract, multiply, divide,power,square_root]
 
 
 # ── STEP 2: State ─────────────────────────────────────────────

@@ -46,22 +46,27 @@ def day_of_week(date_str: str) -> str:
 
 
 # TODO: implement days_between tool
-# @tool
-# def days_between(date1: str, date2: str) -> str:
-#     """Calculate the number of days between two dates (YYYY-MM-DD format).
-#     Returns the absolute number of days as a string."""
-#     pass
+@tool
+def days_between(date1: str, date2: str) -> str:
+    """Calculate the number of days between two dates (YYYY-MM-DD format).
+    Returns the absolute number of days as a string."""
+    return str(abs((date.fromisoformat(date1) - date.fromisoformat(date2)).days))
 
 
 # TODO: implement add_days tool
-# @tool
-# def add_days(date_str: str, n: int) -> str:
-#     """Add n days to a date (YYYY-MM-DD format). Returns the resulting date as YYYY-MM-DD."""
-#     pass
+@tool
+def add_days(date_str: str, n: int) -> str:
+    """Add n days to a date (YYYY-MM-DD format). Returns the resulting date as YYYY-MM-DD."""
+    try:
+        result = (date.fromisoformat(date_str) + timedelta(days=n)).isoformat()
+        print(f"  [tool:add_days] {date_str} + {n} days → {result}")
+        return result
+    except ValueError:
+        return f"ERROR: Invalid date format '{date_str}'. Use YYYY-MM-DD."
 
 
 # TODO: add all 4 tools
-tools = [get_current_date, day_of_week]
+tools = [get_current_date, day_of_week, days_between, add_days]
 
 
 # ── STEP 2: State + LLM + Agent ───────────────────────────────

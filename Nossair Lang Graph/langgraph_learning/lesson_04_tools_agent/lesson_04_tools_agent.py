@@ -24,6 +24,7 @@
 
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import get_ollama_model
 
@@ -94,8 +95,20 @@ def search_wikipedia(query: str) -> str:
     return f"No specific information found for: {query}"
 
 
+@tool
+def square_root(n: float) -> float:
+    """Calculate the square root of a number."""
+    return n ** 0.5
+
+
+@tool
+def convert_currency(amount: float) -> float:
+    """Convert an amount from one currency to another."""
+    return amount * 0.92
+
+
 # Collect all tools in a list
-tools = [add, multiply, get_weather, search_wikipedia]
+tools = [add, multiply, get_weather, search_wikipedia, square_root, convert_currency]
 
 
 # -------------------------------------------------------------
@@ -161,8 +174,8 @@ graph_builder.add_conditional_edges(
     "agent",
     should_continue,
     {
-        "tools": "tools",   # has tool calls → execute them
-        "end": END,          # has final answer → done
+        "tools": "tools",  # has tool calls → execute them
+        "end": END,  # has final answer → done
     }
 )
 
@@ -200,6 +213,11 @@ if __name__ == "__main__":
     # Test 4: Multi-tool
     run_agent("What is the weather in London and what is 100 + 250?")
 
+    # Test 5: square_root
+    run_agent("What is the square_root of 144?")
+
+  # Test 6: convert_currency
+    run_agent("What is the currency conversion of 100 USD to EUR?")
 
 # =============================================================
 # EXERCISE:

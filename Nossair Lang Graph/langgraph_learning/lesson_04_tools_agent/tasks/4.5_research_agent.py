@@ -19,23 +19,26 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 import sys
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from config import get_ollama_model
-
 
 # ── STEP 1: Mocked Research Tools ────────────────────────────
 
 MOCK_SEARCH_DB = {
     "langgraph": [
-        {"url": "https://langchain-ai.github.io/langgraph/", "snippet": "LangGraph is a library for building stateful, multi-actor LLM apps."},
-        {"url": "https://blog.langchain.dev/langgraph/", "snippet": "LangGraph enables cyclic graphs for agentic workflows."},
+        {"url": "https://langchain-ai.github.io/langgraph/",
+         "snippet": "LangGraph is a library for building stateful, multi-actor LLM apps."},
+        {"url": "https://blog.langchain.dev/langgraph/",
+         "snippet": "LangGraph enables cyclic graphs for agentic workflows."},
     ],
     "python": [
         {"url": "https://python.org", "snippet": "Python is a high-level, general-purpose programming language."},
         {"url": "https://docs.python.org/3/", "snippet": "Official Python 3 documentation."},
     ],
     "default": [
-        {"url": "https://en.wikipedia.org/wiki/Artificial_intelligence", "snippet": "AI is the simulation of human intelligence in machines."},
+        {"url": "https://en.wikipedia.org/wiki/Artificial_intelligence",
+         "snippet": "AI is the simulation of human intelligence in machines."},
     ],
 }
 
@@ -69,15 +72,28 @@ def summarize_page(url: str) -> str:
 
 
 # TODO: implement extract_facts tool
-# @tool
-# def extract_facts(text: str) -> str:
-#     """Extract key facts from a block of text. Returns bullet-point facts.
-#     Use this after summarize_page to get structured facts."""
-#     pass
+# Module-level LLM for extract_facts - created once, reused efficiently
+_extract_llm = ChatOllama(model=get_ollama_model(), temperature=0)
+
+
+@tool
+def extract_facts(text: str) -> str:
+    """Extract key facts from a block of text. Returns bullet-point facts.
+    Use this after summarize_page to get structured facts."""
+    prompt = f"""Extract 3-5 key facts from the following text as bullet points.
+Be concise and factual. Return only the bullet points, nothing else.
+
+Text:
+{text}
+
+Facts:"""
+    response = _extract_llm.invoke(prompt)
+    print(f"  [tool:extract_facts] extracted facts from {len(text)} chars")
+    return response.content
 
 
 # TODO: add all 3 tools
-tools = [search_web, summarize_page]
+tools = [search_web, summarize_page, extract_facts]
 
 
 # ── STEP 2: State + LLM + Agent ───────────────────────────────

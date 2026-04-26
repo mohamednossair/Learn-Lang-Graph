@@ -54,15 +54,22 @@ def list_files(directory: str) -> str:
         return f"ERROR: {str(e)}"
 
 
-# TODO: implement count_lines tool
-# @tool
-# def count_lines(path: str) -> str:
-#     """Count the number of lines in a text file. Returns the count as a string, or an error."""
-#     pass
+@tool
+def count_lines(path: str) -> str:
+    """Count the number of lines in a text file. Returns the count as a string, or an error."""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        print(f"  [tool:count_lines] {len(lines)} lines in '{path}'")
+        return str(len(lines))
+    except FileNotFoundError:
+        return f"ERROR: File not found: {path}"
+    except Exception as e:
+        return f"ERROR: {str(e)}"
 
 
 # TODO: add all 3 tools to this list
-tools = [read_file, list_files]
+tools = [read_file, list_files,count_lines]
 
 
 # ── STEP 2: State + LLM + Agent ───────────────────────────────
@@ -115,7 +122,7 @@ if __name__ == "__main__":
     project_root = os.path.abspath(
         os.path.join(os.path.dirname(__file__), "..", "..", "..")
     )
-    req_path = os.path.join(project_root, "requirements.txt")
+    req_path = os.path.join(project_root, "langgraph_learning", "requirements.txt")
 
     run(f"How many lines does the file '{req_path}' have?")
     run(f"List all files in the directory: {project_root}")
