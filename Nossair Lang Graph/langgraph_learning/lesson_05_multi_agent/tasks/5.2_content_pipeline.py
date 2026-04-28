@@ -59,9 +59,27 @@ researcher, writer, editor, seo_agent, or FINISH"""
 
 
 def supervisor_node(state: ContentState) -> dict:
-    # TODO: determine next step based on what's been completed
-    # Return {"next": "researcher"|"writer"|"editor"|"seo_agent"|"FINISH"}
-    pass
+    # Determine which steps are completed
+    research_done = bool(state.get("research"))
+    draft_done = bool(state.get("draft"))
+    editing_done = bool(state.get("edited"))
+    seo_done = bool(state.get("seo_version"))
+
+    # Build prompt with current state
+    prompt = SUPERVISOR_PROMPT.format(
+        research_done=research_done,
+        draft_done=draft_done,
+        editing_done=editing_done,
+        seo_done=seo_done
+    )
+
+    messages = [SystemMessage(content=prompt)]
+    response = llm.invoke(messages)
+
+    next_step = response.content.strip().lower()
+    print(f"[supervisor] Routing to: {next_step}")
+
+    return {"next": next_step}
 
 
 # ── STEP 4: Specialist Nodes ──────────────────────────────────
@@ -96,27 +114,71 @@ def editor_node(state: ContentState) -> dict:
     return {"edited": response.content, "messages": [response]}
 
 
-# TODO: implement seo_agent_node
-# def seo_agent_node(state: ContentState) -> dict:
-#     # Add SEO title, meta description, and 3 keyword suggestions
-#     pass
+def seo_agent_node(state: ContentState) -> dict:
+    prompt = [
+        SystemMessage(content="""You are an SEO specialist. Optimize the content for search engines.
+Add:
+1. An SEO-optimized title (max 60 chars)
+2. A meta description (max 160 chars)
+3. 3-5 relevant keywords
+
+Format the output as:
+---
+Title: [SEO title]
+Meta: [meta description]
+Keywords: [keyword1], [keyword2], [keyword3]
+
+Content:
+[the edited content]
+---"""),
+        HumanMessage(content=f"Topic: {state['topic']}\n\nEdited Content:\n{state['edited']}"),
+    ]
+    response = llm.invoke(prompt)
+    print("[seo_agent] Done")
+    return {"seo_version": response.content, "messages": [response]}
 
 
 # ── STEP 5: Routing Function ──────────────────────────────────
 
 def route_supervisor(state: ContentState) -> Literal["researcher", "writer", "editor", "seo_agent", "__end__"]:
-    # TODO: map state["next"] → node name or "__end__"
-    pass
+    next_step = state.get("next", "").strip().lower()
+
+    # Map "finish" to __end__, otherwise return the node name
+    if next_step == "finish":
+        return "__end__"
+    elif next_step in ["researcher", "writer", "editor", "seo_agent"]:
+        return next_step
+    else:
+        # Default to researcher if unknown/empty
+        return "researcher"
 
 
 # ── STEP 6: Build Graph ───────────────────────────────────────
 
 graph_builder = StateGraph(ContentState)
 
-# TODO: add supervisor + all 4 specialist nodes
-# TODO: START → supervisor
-# TODO: conditional edges from supervisor
-# TODO: each specialist → supervisor
+# Add all nodes
+graph_builder.add_node("supervisor", supervisor_node)
+graph_builder.add_node("researcher", researcher_node)
+graph_builder.add_node("writer", writer_node)
+graph_builder.add_node("editor", editor_node)
+graph_builder.add_node("seo_agent", seo_agent_node)
+
+# START → supervisor
+graph_builder.add_edge(START, "supervisor")
+
+# Supervisor conditional routing
+graph_builder.add_conditional_edges(
+    "supervisor",
+    route_supervisor,
+    ["researcher", "writer", "editor", "seo_agent", "__end__"]
+)
+
+# Each specialist → supervisor (loop back)
+graph_builder.add_edge("researcher", "supervisor")
+graph_builder.add_edge("writer", "supervisor")
+graph_builder.add_edge("editor", "supervisor")
+graph_builder.add_edge("seo_agent", "supervisor")
 
 graph = graph_builder.compile()
 

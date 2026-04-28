@@ -37,7 +37,6 @@ class SupportState(TypedDict):
 
 llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
-supervisor_llm = ChatOllama(model=get_ollama_model(), temperature=0)
 
 # ── STEP 3: Supervisor Node ───────────────────────────────────
 # TODO:

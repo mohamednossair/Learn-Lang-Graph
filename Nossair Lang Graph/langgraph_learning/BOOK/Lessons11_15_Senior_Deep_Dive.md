@@ -288,7 +288,7 @@ from langchain_ollama import OllamaEmbeddings
 embeddings = OllamaEmbeddings(model="llama3.2")
 
 # 4. Store in vector database
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 vectorstore = Chroma.from_documents(
     documents=chunks,
     embedding=embeddings,

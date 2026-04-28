@@ -53,7 +53,7 @@ def syntax_checker(state: ReviewState) -> dict:
     ]
     response = llm.invoke(prompt)
     print("[syntax_checker] Done")
-    return {"review_reports": [f"[SYNTAX/LOGIC]\n{response.content}"]}
+    return {"review_reports": [f"[SYNTAX/LOGIC]\n{response.content}"], "messages": [response]}
 
 
 def style_checker(state: ReviewState) -> dict:
@@ -63,25 +63,28 @@ def style_checker(state: ReviewState) -> dict:
     ]
     response = llm.invoke(prompt)
     print("[style_checker] Done")
-    return {"review_reports": [f"[STYLE]\n{response.content}"]}
+    return {"review_reports": [f"[STYLE]\n{response.content}"], "messages": [response]}
 
 
-# TODO: implement security_checker node
-# def security_checker(state: ReviewState) -> dict:
-#     # Check for: SQL injection, hardcoded secrets, unsafe eval(), unvalidated input
-#     pass
+def security_checker(state: ReviewState) -> dict:
+    prompt = [
+        SystemMessage(content="You are a security reviewer. Check for SQL injection, hardcoded secrets, unsafe eval(), and unvalidated input. Be concise."),
+        HumanMessage(content=f"Review this code for security issues:\n```python\n{state['code']}\n```"),
+    ]
+    response = llm.invoke(prompt)
+    print("[security_checker] Done")
+    return {"review_reports": [f"[SECURITY]\n{response.content}"], "messages": [response]}
 
 
 # ── STEP 4: Fan-Out Function ──────────────────────────────────
 # TODO: return Send() calls to run all 3 checkers in parallel
 
 def fan_out(state: ReviewState) -> list:
-    # return [
-    #     Send("syntax_checker", state),
-    #     Send("style_checker", state),
-    #     Send("security_checker", state),
-    # ]
-    pass
+    return [
+        Send("syntax_checker", {"code": state["code"], "review_reports": [], "final_review": "", "messages": []}),
+        Send("style_checker", {"code": state["code"], "review_reports": [], "final_review": "", "messages": []}),
+        Send("security_checker", {"code": state["code"], "review_reports": [], "final_review": "", "messages": []}),
+    ]
 
 
 # ── STEP 5: Combiner Node ─────────────────────────────────────
@@ -102,10 +105,21 @@ def combine_reviews(state: ReviewState) -> dict:
 
 graph_builder = StateGraph(ReviewState)
 
-# TODO: add all nodes
-# TODO: START → fan_out (using add_conditional_edges with fan_out returning Send list)
-# TODO: all checkers → combine_reviews
-# TODO: combine_reviews → END
+graph_builder.add_node("syntax_checker", syntax_checker)
+graph_builder.add_node("style_checker", style_checker)
+graph_builder.add_node("security_checker", security_checker)
+graph_builder.add_node("combine_reviews", combine_reviews)
+
+# START fans out to all 3 checkers in parallel
+graph_builder.add_conditional_edges(START, fan_out)
+
+# All checkers converge to combine_reviews
+graph_builder.add_edge("syntax_checker", "combine_reviews")
+graph_builder.add_edge("style_checker", "combine_reviews")
+graph_builder.add_edge("security_checker", "combine_reviews")
+
+# Combiner finishes the graph
+graph_builder.add_edge("combine_reviews", END)
 
 graph = graph_builder.compile()
 

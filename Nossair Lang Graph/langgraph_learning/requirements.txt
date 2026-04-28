@@ -6,6 +6,7 @@ langgraph-checkpoint-sqlite
 pydantic>=2.0.0
 # Lesson 12 & 13 — RAG + vector memory
 langchain-community>=0.2.0
+langchain-chroma>=0.1.0
 langchain-text-splitters>=0.2.0
 chromadb>=0.5.0
 # Lesson 14 — Testing

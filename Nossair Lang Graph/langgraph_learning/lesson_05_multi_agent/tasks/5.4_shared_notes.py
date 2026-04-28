@@ -28,11 +28,15 @@ from config import get_ollama_model
 
 def append_notes(existing: list, new: list) -> list:
     """Reducer: append new notes to shared_notes list."""
-    return existing + new
+    return (existing or []) + (new or [])
+
+
+PIPELINE = ["market_analyst", "tech_analyst", "risk_analyst", "summarizer", "finish"]
 
 
 class AnalysisState(TypedDict):
     messages: Annotated[list, add_messages]
+    step: int                                    # current pipeline index (guardrail)
     next: str                                    # supervisor routing
     proposal: str                                # business proposal text
     shared_notes: Annotated[list, append_notes]  # cross-agent findings
@@ -44,32 +48,44 @@ class AnalysisState(TypedDict):
 llm = ChatOllama(model=get_ollama_model(), temperature=0.3)
 
 
-# ── STEP 3: Supervisor Node ───────────────────────────────────
-# TODO:
-#   Supervisor reads shared_notes to know what's been done.
-#   Pipeline: market_analyst → tech_analyst → risk_analyst → summarizer → FINISH
-#   Respond with ONLY: market_analyst, tech_analyst, risk_analyst, summarizer, FINISH
+# ── STEP 3: Supervisor Node (LLM with guardrails) ─────────────
+# Supervisor suggests next step, but step index enforces pipeline order
 
 def supervisor_node(state: AnalysisState) -> dict:
+    current_step = state.get("step", 0)
     notes_summary = "\n".join([f"- {n}" for n in state["shared_notes"]]) or "None yet"
+
     prompt = [
         SystemMessage(content=f"""You are an analysis supervisor.
 Pipeline: market_analyst → tech_analyst → risk_analyst → summarizer → FINISH
+Current step index: {current_step}
 
 Shared notes so far:
 {notes_summary}
 
-Decide the next step. Respond with ONLY one word:
+Suggest the next step. Respond with ONLY one word:
 market_analyst, tech_analyst, risk_analyst, summarizer, or FINISH"""),
-        HumanMessage(content=f"Proposal: {state['proposal'][:200]}"),
+        HumanMessage(content=f"Proposal: {state['proposal']}"),
     ]
     response = llm.invoke(prompt)
-    next_step = response.content.strip().lower()
+    suggested = response.content.strip().lower()
+
+    # Guardrail: enforce pipeline order using step index
+    expected = PIPELINE[min(current_step, len(PIPELINE) - 1)]
     valid = {"market_analyst", "tech_analyst", "risk_analyst", "summarizer", "finish"}
-    if next_step not in valid:
-        next_step = "market_analyst"
-    print(f"[supervisor] → {next_step}")
-    return {"next": next_step}
+
+    if suggested not in valid:
+        next_step = expected
+        print(f"[supervisor] invalid '{suggested}' → enforced {expected}")
+    elif PIPELINE.index(suggested) < current_step:
+        # LLM tried to go backwards - enforce forward progress
+        next_step = expected
+        print(f"[supervisor] backwards '{suggested}' → enforced {expected}")
+    else:
+        next_step = suggested
+        print(f"[supervisor] step {current_step} → {next_step}")
+
+    return {"next": next_step, "step": current_step + 1}
 
 
 # ── STEP 4: Specialist Nodes ──────────────────────────────────
@@ -96,16 +112,26 @@ def tech_analyst(state: AnalysisState) -> dict:
     return {"shared_notes": [note], "messages": [response]}
 
 
-# TODO: implement risk_analyst node
-# def risk_analyst(state: AnalysisState) -> dict:
-#     # Read shared_notes for context, identify top 2 risks, append a "[RISK]" note
-#     pass
+def risk_analyst(state: AnalysisState) -> dict:
+    prompt = [
+        SystemMessage(content="You are a risk analyst. Identify the top 2 risks in 2 sentences."),
+        HumanMessage(content=f"Proposal: {state['proposal']}\n\nPrevious notes:\n" + "\n".join(state["shared_notes"])),
+    ]
+    response = llm.invoke(prompt)
+    note = f"[RISK] {response.content[:150]}"
+    print(f"[risk_analyst] Note added")
+    return {"shared_notes": [note], "messages": [response]}
 
 
-# TODO: implement summarizer node
-# def summarizer(state: AnalysisState) -> dict:
-#     # Read all shared_notes, write final_report combining all findings
-#     pass
+def summarizer(state: AnalysisState) -> dict:
+    all_notes = "\n".join(state["shared_notes"])
+    prompt = [
+        SystemMessage(content="You are a senior business analyst. Write a concise final report combining all findings below."),
+        HumanMessage(content=f"Notes:\n{all_notes}"),
+    ]
+    response = llm.invoke(prompt)
+    print(f"[summarizer] Final report done")
+    return {"final_report": response.content, "messages": [response]}
 
 
 # ── STEP 5: Routing Function ──────────────────────────────────
@@ -128,19 +154,22 @@ graph_builder = StateGraph(AnalysisState)
 graph_builder.add_node("supervisor", supervisor_node)
 graph_builder.add_node("market_analyst", market_analyst)
 graph_builder.add_node("tech_analyst", tech_analyst)
-# TODO: add risk_analyst and summarizer nodes
+graph_builder.add_node("risk_analyst", risk_analyst)
+graph_builder.add_node("summarizer", summarizer)
 
 graph_builder.add_edge(START, "supervisor")
 graph_builder.add_conditional_edges("supervisor", route_supervisor, {
     "market_analyst": "market_analyst",
     "tech_analyst": "tech_analyst",
-    # TODO: add risk_analyst and summarizer
+    "risk_analyst": "risk_analyst",
+    "summarizer": "summarizer",
     "__end__": END,
 })
 
 graph_builder.add_edge("market_analyst", "supervisor")
 graph_builder.add_edge("tech_analyst", "supervisor")
-# TODO: add edges for risk_analyst and summarizer → supervisor
+graph_builder.add_edge("risk_analyst", "supervisor")
+graph_builder.add_edge("summarizer", "supervisor")
 
 graph = graph_builder.compile()
 
@@ -161,6 +190,7 @@ if __name__ == "__main__":
 
     result = graph.invoke({
         "messages": [HumanMessage(content="Analyze this business proposal")],
+        "step": 0,
         "next": "",
         "proposal": PROPOSAL,
         "shared_notes": [],

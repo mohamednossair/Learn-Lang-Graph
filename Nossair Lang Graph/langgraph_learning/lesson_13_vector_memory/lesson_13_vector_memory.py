@@ -37,7 +37,7 @@ from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
 
 try:
-    from langchain_community.vectorstores import Chroma
+    from langchain_chroma import Chroma
     CHROMA_AVAILABLE = True
 except ImportError:
     CHROMA_AVAILABLE = False

@@ -39,3 +39,10 @@ def get_temperature(default: float = 0.0) -> float:
         except ValueError:
             return default
     return default
+
+
+class Config:
+    """Mock Config class for se2_agent_shared library."""
+    def logger(self, name):
+        import logging
+        return logging.getLogger(name)

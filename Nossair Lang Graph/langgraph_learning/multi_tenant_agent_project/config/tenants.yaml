@@ -1,0 +1,48 @@
+tenants:
+  customer_a:
+    customer_id: "customer_a"
+    display_name: "Customer A Electronics"
+    solr_core: "customer_a_core"
+    s3_prefix: "tenants/customer_a/"
+    db_pool_name: "pool_a"
+    allowed_topics: ["electronics", "supply_chain", "BOM", "components", "compliance"]
+    blocked_topics: ["entertainment", "sports", "gaming", "cooking"]
+    out_of_scope_msg: "I specialize in electronics for Customer A. Please stick to these topics."
+    custom_instructions: "Focus on RoHS and REACH compliance. Be professional and precise."
+    jwks_url: null
+    feature_flags:
+      enable_sql: true
+      enable_charts: false
+      enable_long_term_memory: false
+
+  customer_b:
+    customer_id: "customer_b"
+    display_name: "Customer B Inventory"
+    solr_core: "customer_b_core"
+    s3_prefix: "tenants/customer_b/"
+    db_pool_name: "pool_b"
+    allowed_topics: ["inventory", "pricing", "warehouse", "stock", "procurement"]
+    blocked_topics: ["politics", "medical", "sports", "entertainment"]
+    out_of_scope_msg: "Customer B Assistant: I can only help with inventory and pricing."
+    custom_instructions: "Always format currency in USD. Be concise and data-driven."
+    jwks_url: null
+    feature_flags:
+      enable_sql: true
+      enable_charts: true
+      enable_long_term_memory: false
+
+  customer_c:
+    customer_id: "customer_c"
+    display_name: "Customer C Logistics"
+    solr_core: "customer_c_core"
+    s3_prefix: "tenants/customer_c/"
+    db_pool_name: "pool_c"
+    allowed_topics: ["shipping", "logistics", "tracking", "freight", "customs", "delivery"]
+    blocked_topics: ["gaming", "cooking", "entertainment", "sports"]
+    out_of_scope_msg: "Customer C Logistics Desk: Ask about shipping, tracking and freight only."
+    custom_instructions: "Use 24-hour time format for all shipping dates. Always include ETA."
+    jwks_url: null
+    feature_flags:
+      enable_sql: false
+      enable_charts: false
+      enable_long_term_memory: false
