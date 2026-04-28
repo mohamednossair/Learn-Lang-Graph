@@ -15,13 +15,13 @@
 
 ### Original Parts (overview + tasks + basic Q&A)
 
-| File | Content | Lessons |
-|------|---------|---------|
-| [BOOK_Part1_Foundation.md](BOOK_Part1_Foundation.md) | StateGraph, routing, chatbots, tools, multi-agent | 1–5 |
-| [BOOK_Part2_Advanced.md](BOOK_Part2_Advanced.md) | Database agent, HITL, memory, best practices, capstone | 6–10 |
-| [BOOK_Part3_Senior.md](BOOK_Part3_Senior.md) | Subgraphs, RAG, vector memory, testing, deployment | 11–15 |
+| File                                                           | Content | Lessons |
+|----------------------------------------------------------------|---------|---------|
+| [BOOK_Part1_Foundation.md](BOOK_Part1_Foundation.md)      | StateGraph, routing, chatbots, tools, multi-agent | 1–5 |
+| [BOOK_Part2_Advanced.md](BOOK_Part2_Advanced.md)               | Database agent, HITL, memory, best practices, capstone | 6–10 |
+| [BOOK_Part3_Senior.md](BOOK_Part3_Senior.md)                   | Subgraphs, RAG, vector memory, testing, deployment | 11–15 |
 | [BOOK_Part4_Interview_Master.md](BOOK_Part4_Interview_Master.md) | 50 Q&A, system design, cheatsheet, self-assessment | — |
-| [BOOK_Part5_Enterprise.md](BOOK_Part5_Enterprise.md) | Oracle 19c async, RBAC, observability, event-driven, cost governance, AWS Bedrock, S3, Conversation API, EC2 deployment | 16–24 |
+| [BOOK_Part5_Enterprise.md](BOOK_Part5_Enterprise.md)           | Oracle 19c async, RBAC, observability, event-driven, cost governance, AWS Bedrock, S3, Conversation API, EC2 deployment | 16–24 |
 
 ### Deep Dive Files (rich theory + under-the-hood + anti-patterns + full Q&A)
 
